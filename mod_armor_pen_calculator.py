@@ -6,11 +6,30 @@ from AvatarInputHandler.gun_marker_ctrl import _CrosshairShotResults
 from debug_utils import LOG_WARNING
 
 
+
+# Helper to find mangled or renamed functions
+def get_method_safely(cls, base_name):
+    # Try the mangled version first
+    mangled = "_%s__%s" % (cls.__name__, base_name)
+    if hasattr(cls, mangled):
+        return mangled
+    # Try the protected version (single underscore)
+    protected = "_%s" % base_name
+    if hasattr(cls, protected):
+        return protected
+    # Try the public version
+    if hasattr(cls, base_name):
+        return base_name
+    return None
+
+
 LOG_WARNING("pademinune ARMOR PEN MOD LOADING STARTED")
 
 # 1. Hook the Crosshair Color Update
 # This triggers every time the crosshair moves or a target changes
-_orig_updateColor = plugins.ShotResultIndicatorPlugin._ShotResultIndicatorPlugin__updateColor
+func_name = get_method_safely(plugins.ShotResultIndicatorPlugin, "updateColor")
+# _orig_updateColor = plugins.ShotResultIndicatorPlugin._ShotResultIndicatorPlugin__updateColor
+_orig_updateColor = getattr(plugins.ShotResultIndicatorPlugin, func_name)
 
 def _my_updateColor(self, markerType, position, collision, direction):
     # Call original game function first
@@ -73,6 +92,7 @@ def _my_updateColor(self, markerType, position, collision, direction):
 
 
 # Apply the Hook
-plugins.ShotResultIndicatorPlugin._ShotResultIndicatorPlugin__updateColor = _my_updateColor
+# plugins.ShotResultIndicatorPlugin._ShotResultIndicatorPlugin__updateColor = _my_updateColor
+setattr(plugins.ShotResultIndicatorPlugin, func_name, _my_updateColor)
 
 LOG_WARNING("pademinune ARMOR PEN MOD LOADING FINISHED")
