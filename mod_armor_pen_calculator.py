@@ -1,62 +1,90 @@
 
-from gui.Scaleform.daapi.view.battle.shared.crosshair import plugins
+import BigWorld
 from debug_utils import LOG_WARNING
+from AvatarInputHandler import gun_marker_ctrl
+import math
+import GUI
+
 
 def log(message):
     LOG_WARNING("pademinune: " + str(message))
 
+
+RED = (255, 0, 0, 255)
+YELLOW = (255, 255, 0, 255)
+GREEN = (0, 255, 0, 255)
+GREY = (128, 128, 128, 255)
+
 log("Mod is loading")
+
+# Create a text component
+label = GUI.Text("")
+label.font = "default_large.font" # Or "default_medium.font"
+label.filterType = "LINEAR"
+label.horizontalAnchor = "CENTER"
+label.verticalAnchor = "CENTER"
+label.horizontalPositionMode = "SCREEN_RELATIVE"
+label.verticalPositionMode = "SCREEN_RELATIVE"
+label.size = (0.5, 0.04)
+label.position = (0, -0.1, 0.5) # Center of screen, slightly below crosshair
+label.visible = False
+GUI.addRoot(label)
+
+label.text = "ARMOR PEN LABEL"
+label.colour = GREY
+label.visible = True
+
+def update_ui(text, color_vec4 = GREY):
+    label.text = text
+    label.colour = color_vec4 # (R, G, B, A) from 0-255
+    label.visible = True
+
 
 # 1. Use the MANGLED name
 hook_target = "_ShotResultIndicatorPlugin__onGunMarkerStateChanged"
+# _computePenetrationArmor
 
 # 2. Save the original
-orig_onMarkerChanged = getattr(plugins.ShotResultIndicatorPlugin, hook_target)
+orginal_function = gun_marker_ctrl._CrosshairShotResults._computePenetrationArmor
 
 # 3. Your Wrapper
-def my_onMarkerChanged(self, markerType, gunMarkerState, supportMarkersInfo):
-    # Let the game update the crosshair color first
-    orig_onMarkerChanged(self, markerType, gunMarkerState, supportMarkersInfo)
+def my_function(cls, shell, hitAngleCos, matInfo):
+    armor_value = orginal_function(shell, hitAngleCos, matInfo)
+    # log("Armor is " + str(armor_value) + "mm")
     
-    # NOW perform your armor math here using 'gunMarkerState.collData'
-    # ... your math logic ...
-    # ... update ArmorModData.display_text ...
-    try:
-        # Only log if we are in Sniper Mode (markerType 2) to keep the log clean
-        # markerType 1 = Arcade, 2 = Sniper, 3 = Arty
-        if markerType == 2:
-            log("In sniper mode")
-            # --- DISCOVERY 1: Basic marker info ---
-            pos = getattr(gunMarkerState, 'position', 'N/A')
-            log("[MOD DEBUG] Pos: %s" % str(pos))
+    # --- GET SHELL PENETRATION ---
+    player = BigWorld.player()
+    v_desc = player.getVehicleDescriptor()
+    
+    # This is the average penetration of your currently selected shell (garage value)
+    avg_pen = v_desc.shot.piercingPower[0]
+    
+    # --- CALCULATE PROBABILITY ---
+    # WoT RNG is +/- 25% (0.75 to 1.25)
+    min_pen = avg_pen * 0.75
+    max_pen = avg_pen * 1.25
+    
+    if armor_value <= min_pen:
+        prob = 100
+    elif armor_value >= max_pen:
+        prob = 0
+    else:
+        prob = ((max_pen - armor_value) / (max_pen - min_pen)) * 100
+    
+    text = "{}mm | {}%".format(int(armor_value), int(prob))
+    color = GREY # catch all
+    if prob == 100:
+        color = GREEN
+    elif 0 < prob < 100:
+        color = YELLOW
+    elif prob == 0:
+        color = RED
+    
+    update_ui(text, color)
 
-            # --- DISCOVERY 2: Collision Data ---
-            # This is the most important part for your mod
-            collData = getattr(gunMarkerState, 'collData', None)
-            
-            if collData is not None:
-                # Get the target entity name
-                target_name = "None"
-                if hasattr(collData, 'entity') and collData.entity:
-                    # Some versions use 'typeDescriptor', some use 'publicInfo'
-                    if hasattr(collData.entity, 'typeDescriptor'):
-                        target_name = collData.entity.typeDescriptor.type.userString
-
-                # Get the raw armor values WG is seeing
-                armor = getattr(collData, 'armor', 'N/A')
-                angleCos = getattr(collData, 'hitAngleCos', 'N/A')
-
-                log("[MOD DEBUG] TARGET: %s | ARMOR: %s | ANGLE_COS: %s" % (target_name, armor, angleCos))
-            else:
-                # If this prints while aiming at a tank, your game settings have 
-                # "Armor Penetration Indicator" disabled!
-                log("[MOD DEBUG] No collision data detected.")
-
-    except Exception as e:
-        log("[MOD DEBUG] ERROR in hook: %s" % str(e))
-
+    return armor_value
 
 # 4. Apply
-setattr(plugins.ShotResultIndicatorPlugin, hook_target, my_onMarkerChanged)
+gun_marker_ctrl._CrosshairShotResults._computePenetrationArmor = classmethod(my_function)
 
 log("Mod has finished loading")
