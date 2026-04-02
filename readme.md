@@ -6,6 +6,8 @@ This mod displays the exact armor value and  probability of penetrating a tank t
 
 The mod factors in all relevant world of tanks mechanics including shell-specific normalization, ricochet angles, spaced armor, and heat shell dissipation when hitting spaced armor.
 
+I made this mod because I was unsatisfied with some of the other options found in big modpacks. They never computed and showed the exact probability.
+
 ## Probability details
 
 In world of tanks, a shell's actual penetration value is given by a random number selected with a gaussian probability distribution from 75% to 125% of that shells average penetration.
