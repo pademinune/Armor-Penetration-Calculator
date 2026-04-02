@@ -37,8 +37,14 @@ def get_gaussian_probability(avg_pen, armor_val):
     
     return prob
 
+# or try:
+# red: E90000
+# yellow: FFAD00
+# green: 6BF40D
+
 RED = (255, 0, 0, 255)
 YELLOW = (255, 255, 0, 255)
+ORANGE = (255, 173, 0, 255)
 GREEN = (0, 255, 0, 255)
 GREY = (128, 128, 128, 255)
 PURPLE = (128, 0, 128, 255)
@@ -86,7 +92,7 @@ def update_ui_with_stats(avg_pen, min_pen, max_pen, armor_val, ricochet, hit_bod
         # armor_val is left of z = -1.5
         color = GREEN
     else:
-        color = YELLOW
+        color = ORANGE
 
     update_ui("{}mm | {}%".format(int(armor_val), int(prob)), color)
 
