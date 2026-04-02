@@ -21,20 +21,18 @@ def get_gaussian_probability(avg_pen, armor_val):
         return 0.0
     
     # 12 * (armor_val - avg_pen) / (avg_pen)
-    # 1. Define the Standard Deviation (sigma)
     # If 25% is the 3-sigma point:
     # avg_pen * 0.25 = 3 SD.
     standard_deviation = avg_pen / 12
     
-    # 2. Calculate the Z-score (how many sigmas away from average is the armor?)
-    # Z = (Value - Mean) / Sigma
+    # z-score
     z = (armor_val - avg_pen) / standard_deviation
     
-    # 3. Calculate the Cumulative Distribution Function (CDF)
-    # This gives the probability that a roll is LESS than the armor
+    # Cumulative Distribution Function (CDF)
+    # P(pen < armor)
     phi = 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
     
-    # 4. The Probability of PENNING is 1 - Phi (the area to the right)
+    # get area to the right P(pen > armor)
     prob = (1.0 - phi) * 100
     
     return prob
@@ -63,10 +61,17 @@ def update_ui(text, color_vec4 = GREY):
     label.colour = color_vec4 # (R, G, B, A) from 0-255
     label.visible = True
 
-def update_ui_with_stats(avg_pen, min_pen, max_pen, armor_val, ricochet):
+def update_ui_with_stats(avg_pen, min_pen, max_pen, armor_val, ricochet, hit_body):
 
     if ricochet:
+        # shell ricochet
         color = PURPLE
+        update_ui("- | 0%", color)
+        return
+    
+    if not hit_body:
+        # shell only hits spaced armor or tracks
+        color = RED
         update_ui("- | 0%", color)
         return
 
@@ -86,14 +91,14 @@ def update_ui_with_stats(avg_pen, min_pen, max_pen, armor_val, ricochet):
     update_ui("{}mm | {}%".format(int(armor_val), int(prob)), color)
 
 
-# --- THE FIXED OVERRIDE ---
-def my_function(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, minPP, maxPP, entity):
-    # Fix 1: Initialize counters
+# functin override
+def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, minPP, maxPP, entity):
+    # pademinune armor mod variables
     total_armor_val = 0.0
     ricochet = False
+    hit_body = False
     
-    # Fix 2: Localize references to private class members
-    # Since we are outside the class, we must use the "Mangled" names
+    # Since we are outside the class, we must use the mangled names
     isDestructible = cls._CrosshairShotResults__isDestructibleComponent
     collectDebug = cls._CrosshairShotResults__collectDebugPiercingData
     sendDebug = cls._CrosshairShotResults__sendDebugInfo
@@ -117,9 +122,9 @@ def my_function(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, min
                 lossByDist = 1.0 - jetDist * cls._SHELL_EXTRA_DATA[shell.kind].jetLossPPByDist
                 
                 # add dissipation amount onto total armor
-                lost_pen = piercingPower * (1 - lossByDist)
+                lost_pen = max(0, piercingPower * (1 - lossByDist)) # max ensures no negative penetration dropoffs (when models overlap)
                 total_armor_val += lost_pen
-                log("heat dropoff: {}mm".format(lost_pen))
+                # log("heat dropoff: {}mm".format(lost_pen))
 
                 piercingPower *= lossByDist
                 minPiercingPower = round(minPiercingPower * lossByDist)
@@ -158,6 +163,7 @@ def my_function(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, min
 
             if matInfo.vehicleDamageFactor:
                 # main armor plate
+                hit_body = True
                 if minPP < piercingPercent < maxPP:
                     result = _SHOT_RESULT.LITTLE_PIERCED
                 elif piercingPercent <= minPP:
@@ -193,11 +199,11 @@ def my_function(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, min
     # pademinune armor mod calc
     min_possible_pen = fullPiercingPower * 0.75
     max_possible_pen = fullPiercingPower * 1.25
-    update_ui_with_stats(fullPiercingPower, min_possible_pen, max_possible_pen, total_armor_val, ricochet)
+    update_ui_with_stats(fullPiercingPower, min_possible_pen, max_possible_pen, total_armor_val, ricochet, hit_body)
 
     return result
 
-# 4. Apply
-gun_marker_ctrl._CrosshairShotResults._CrosshairShotResults__shotResultDefault = classmethod(my_function)
+# override source code function
+gun_marker_ctrl._CrosshairShotResults._CrosshairShotResults__shotResultDefault = classmethod(my_shot_result_default)
 
 log("Mod has finished loading")

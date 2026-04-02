@@ -8,6 +8,8 @@ The mod factors in all relevant world of tanks mechanics including shell-specifi
 
 I made this mod because I was unsatisfied with some of the other options found in big modpacks. They never computed and showed the exact probability.
 
+This mod also tells you when a shot will be a ricochet.
+
 ## Probability details
 
 In world of tanks, a shell's actual penetration value is given by a random number selected with a gaussian probability distribution from 75% to 125% of that shells average penetration.
