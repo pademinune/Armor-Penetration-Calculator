@@ -20,11 +20,10 @@ def get_gaussian_probability(avg_pen, armor_val):
     if armor_val >= max_pen: 
         return 0.0
     
-
     # 12 * (armor_val - avg_pen) / (avg_pen)
     # 1. Define the Standard Deviation (sigma)
     # If 25% is the 3-sigma point:
-    # avg_pen * 0.25 is 3 SD.
+    # avg_pen * 0.25 = 3 SD.
     standard_deviation = avg_pen / 12
     
     # 2. Calculate the Z-score (how many sigmas away from average is the armor?)
@@ -74,13 +73,6 @@ def update_ui_with_stats(avg_pen, min_pen, max_pen, armor_val, ricochet):
 
     prob = get_gaussian_probability(avg_pen, armor_val)
 
-    # if armor_val <= min_pen:
-    #     prob = 100
-    # elif armor_val >= max_pen:
-    #     prob = 0
-    # else:
-    #     prob = ((max_pen - armor_val) / (max_pen - min_pen)) * 100
-
     color = GREY
     if prob <= 7:
         # armor_val is right of z = 1.5
@@ -91,7 +83,6 @@ def update_ui_with_stats(avg_pen, min_pen, max_pen, armor_val, ricochet):
     else:
         color = YELLOW
 
-    # log("{}mm | {}%".format(int(total_armor_val), int(prob)))
     update_ui("{}mm | {}%".format(int(armor_val), int(prob)), color)
 
 
@@ -124,6 +115,12 @@ def my_function(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, min
             jetDist = cDetails.dist - jetStartDist
             if jetDist > 0.0:
                 lossByDist = 1.0 - jetDist * cls._SHELL_EXTRA_DATA[shell.kind].jetLossPPByDist
+                
+                # add dissipation amount onto total armor
+                lost_pen = piercingPower * (1 - lossByDist)
+                total_armor_val += lost_pen
+                log("heat dropoff: {}mm".format(lost_pen))
+
                 piercingPower *= lossByDist
                 minPiercingPower = round(minPiercingPower * lossByDist)
                 maxPiercingPower = round(maxPiercingPower * lossByDist)
@@ -136,7 +133,6 @@ def my_function(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, min
                 continue
             if matInfo.armor is None:
                 result = _SHOT_RESULT.UNDEFINED
-                _logger.error('Unconfigured/default material/armor for material kind %d', matInfo.kind)
                 continue
                 
             hitAngleCos = cDetails.hitAngleCos if matInfo.useHitAngle else 1.0
@@ -150,10 +146,9 @@ def my_function(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, min
                 
             penetrationArmor = 0
             if piercingPower > 0.0:
-                # This is the "Reduced Armor" for the current layer
                 penetrationArmor = cls._computePenetrationArmor(shell, hitAngleCos, matInfo)
                 
-                # Update your counter
+                # add to total armor counter
                 total_armor_val += penetrationArmor
                 
                 piercingPercent = 100.0 + (penetrationArmor - piercingPower) / fullPiercingPower * 100.0
@@ -196,7 +191,6 @@ def my_function(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, min
     sendDebug(gunMarker, debugPiercingsList, minPP, maxPP, fullPiercingPower)
 
     # pademinune armor mod calc
-    # WoT RNG is +/- 25% of the fullPiercingPower (which is already distance-adjusted)
     min_possible_pen = fullPiercingPower * 0.75
     max_possible_pen = fullPiercingPower * 1.25
     update_ui_with_stats(fullPiercingPower, min_possible_pen, max_possible_pen, total_armor_val, ricochet)
