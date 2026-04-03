@@ -1,4 +1,4 @@
-# Armor Penetration Overlay
+# Armor Penetration Calculator
 
 ## Overview
 
