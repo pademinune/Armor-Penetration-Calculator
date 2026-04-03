@@ -3,7 +3,7 @@ import math
 from debug_utils import LOG_WARNING
 from AvatarInputHandler import gun_marker_ctrl
 from aih_constants import SHOT_RESULT as _SHOT_RESULT
-from gui import update_gui as update_gui, hide_labels
+from gui import update_gui, hide_labels, GuiState
 
 def log(message):
     LOG_WARNING("pademinune: " + str(message))
@@ -161,7 +161,8 @@ original_getShotResult = gun_marker_ctrl._CrosshairShotResults.getShotResult.__f
 
 def my_get_shot_result(cls, gunMarker, excludeTeam=0, piercingMultiplier=1):
     result = original_getShotResult(cls, gunMarker, excludeTeam, piercingMultiplier)
-    if result == _SHOT_RESULT.UNDEFINED:
+    if result == _SHOT_RESULT.UNDEFINED and GuiState.is_visible:
+        # only call hide if the gui is still visible
         hide_labels()
     return result
 

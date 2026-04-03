@@ -7,6 +7,9 @@ from gambiter.flash import COMPONENT_TYPE, COMPONENT_ALIGN
 ARMOR_ALIAS = "pademinune_ArmorPenLabel"
 PROB_ALIAS = "pademinune_ProbabilityLabel"
 
+class GuiState:
+    is_visible = False
+
 def log(message):
     print("pademinune's GuiTest mod: " + str(message))
 
@@ -15,6 +18,10 @@ def update_armor_label(armor_value, color):
         'text': "<font size='25' color='#{}' face='$FieldFont'>{}mm</font>".format(color, armor_value),
         "visible": True,
     }
+
+    if not GuiState.is_visible:
+        GuiState.is_visible = True
+
     g_guiFlash.updateComponent(ARMOR_ALIAS, armor_changes)
 
 def update_prob_label(prob, color):
@@ -22,11 +29,19 @@ def update_prob_label(prob, color):
         'text': "<font size='25' color='#{}' face='$FieldFont'>{}%</font>".format(color, prob),
         "visible": True,
     }
+
+    if not GuiState.is_visible:
+        GuiState.is_visible = True
+    
     g_guiFlash.updateComponent(PROB_ALIAS, prob_changes)
 
 def hide_labels():
     armor_changes = {"visible": False}
     prob_changes = {"visible": False}
+
+    if GuiState.is_visible:
+        GuiState.is_visible = False
+
     g_guiFlash.updateComponent(ARMOR_ALIAS, armor_changes)
     g_guiFlash.updateComponent(PROB_ALIAS, prob_changes)
 
