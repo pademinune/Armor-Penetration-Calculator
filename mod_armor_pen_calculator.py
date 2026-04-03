@@ -1,8 +1,8 @@
 
 import math
-from debug_utils import LOG_WARNING
-from AvatarInputHandler import gun_marker_ctrl
-from aih_constants import SHOT_RESULT as _SHOT_RESULT
+from debug_utils import LOG_WARNING # type: ignore
+from AvatarInputHandler import gun_marker_ctrl # type: ignore
+from aih_constants import SHOT_RESULT as _SHOT_RESULT # type: ignore
 from gui import update_gui, hide_labels, GuiState
 
 def log(message):

@@ -1,7 +1,7 @@
 
 from colors import Colors
-from gambiter import g_guiFlash
-from gambiter.flash import COMPONENT_TYPE, COMPONENT_ALIGN
+from gambiter import g_guiFlash # type: ignore
+from gambiter.flash import COMPONENT_TYPE, COMPONENT_ALIGN # type: ignore
 
 
 ARMOR_ALIAS = "pademinune_ArmorPenLabel"
