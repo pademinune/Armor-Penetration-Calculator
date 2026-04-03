@@ -1,5 +1,7 @@
 # Armor Penetration Calculator
 
+<img width="305" height="260" alt="armor-penetration-calculator-thumbnail" src="https://github.com/user-attachments/assets/c4578694-29e5-444f-9273-4a256cf0eb67" />
+
 ## Overview
 
 This mod displays the exact armor value and  probability of penetrating a tank that you are looking at.
