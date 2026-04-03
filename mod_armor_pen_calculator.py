@@ -55,12 +55,12 @@ log("Mod is loading")
 label = GUI.Text("")
 
 label.position = (0, -0.1, 0.5) # Center of screen, slightly below crosshair
-label.visible = False
-GUI.addRoot(label)
-
 label.text = "ARMOR PEN LABEL"
 label.colour = GREY
-label.visible = True
+label.visible = False
+
+GUI.addRoot(label)
+
 
 def update_ui(text, color_vec4 = GREY):
     label.text = text
@@ -209,7 +209,18 @@ def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower,
 
     return result
 
-# override source code function
+original_getShotResult = gun_marker_ctrl._CrosshairShotResults.getShotResult.__func__
+
+def my_get_shot_result(cls, gunMarker, excludeTeam=0, piercingMultiplier=1):
+    result = original_getShotResult(cls, gunMarker, excludeTeam, piercingMultiplier)
+    if result == _SHOT_RESULT.UNDEFINED:
+        label.visible = False
+    return result
+
+
+# overriding source code functions
+gun_marker_ctrl._CrosshairShotResults.getShotResult = classmethod(my_get_shot_result)
+
 gun_marker_ctrl._CrosshairShotResults._CrosshairShotResults__shotResultDefault = classmethod(my_shot_result_default)
 
 log("Mod has finished loading")
