@@ -1,12 +1,9 @@
 
 import math
-import GUI
-import constants
-import logging
-import BigWorld
 from debug_utils import LOG_WARNING
 from AvatarInputHandler import gun_marker_ctrl
 from aih_constants import SHOT_RESULT as _SHOT_RESULT
+from gui import update_gui as update_gui, hide_labels
 
 def log(message):
     LOG_WARNING("pademinune: " + str(message))
@@ -37,65 +34,16 @@ def get_gaussian_probability(avg_pen, armor_val):
     
     return prob
 
-# or try:
-# red: E90000
-# yellow: FFAD00
-# green: 6BF40D
+def call_update_gui(avg_pen, min_pen, max_pen, armor_val, ricochet, hit_body):
+    
+    prob = 0
+    if not ricochet and hit_body:
+        prob = get_gaussian_probability(avg_pen, armor_val)
 
-RED = (255, 0, 0, 255)
-YELLOW = (255, 255, 0, 255)
-ORANGE = (255, 173, 0, 255)
-GREEN = (0, 255, 0, 255)
-GREY = (128, 128, 128, 255)
-PURPLE = (128, 0, 128, 255)
+    update_gui(armor_val, prob, ricochet, hit_body)
+
 
 log("Mod is loading")
-
-# Create a text component
-label = GUI.Text("")
-
-label.position = (0, -0.1, 0.5) # Center of screen, slightly below crosshair
-label.text = "ARMOR PEN LABEL"
-label.colour = GREY
-label.visible = False
-
-GUI.addRoot(label)
-
-
-def update_ui(text, color_vec4 = GREY):
-    label.text = text
-    label.colour = color_vec4 # (R, G, B, A) from 0-255
-    label.visible = True
-
-def update_ui_with_stats(avg_pen, min_pen, max_pen, armor_val, ricochet, hit_body):
-
-    if ricochet:
-        # shell ricochet
-        color = PURPLE
-        update_ui("- | 0%", color)
-        return
-    
-    if not hit_body:
-        # shell only hits spaced armor or tracks
-        color = RED
-        update_ui("- | 0%", color)
-        return
-
-
-    prob = get_gaussian_probability(avg_pen, armor_val)
-
-    color = GREY
-    if prob <= 7:
-        # armor_val is right of z = 1.5
-        color = RED
-    elif prob >= 93:
-        # armor_val is left of z = -1.5
-        color = GREEN
-    else:
-        color = ORANGE
-
-    update_ui("{}mm | {}%".format(int(armor_val), int(prob)), color)
-
 
 # functin override
 def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, minPP, maxPP, entity):
@@ -205,7 +153,7 @@ def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower,
     # pademinune armor mod calc
     min_possible_pen = fullPiercingPower * 0.75
     max_possible_pen = fullPiercingPower * 1.25
-    update_ui_with_stats(fullPiercingPower, min_possible_pen, max_possible_pen, total_armor_val, ricochet, hit_body)
+    call_update_gui(fullPiercingPower, min_possible_pen, max_possible_pen, total_armor_val, ricochet, hit_body)
 
     return result
 
@@ -214,7 +162,7 @@ original_getShotResult = gun_marker_ctrl._CrosshairShotResults.getShotResult.__f
 def my_get_shot_result(cls, gunMarker, excludeTeam=0, piercingMultiplier=1):
     result = original_getShotResult(cls, gunMarker, excludeTeam, piercingMultiplier)
     if result == _SHOT_RESULT.UNDEFINED:
-        label.visible = False
+        hide_labels()
     return result
 
 
