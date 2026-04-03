@@ -16,6 +16,20 @@ This mod also tells you when a shot will ricochet.
 
 Since this mod relies on [GUIFlash](https://github.com/CH4MPi/GUIFlash), you will need two `.wotmod` files.
 
+### Install using zip file (Recommended)
+
+1. Download `unzip-me.zip` from the [latest release](https://github.com/pademinune/Armor-Penetration-Calculator/releases).
+
+2. Put the zip file in your `mods/x.x.x.x/` folder found in your local
+World of Tanks installation folder.
+
+3. Unzip and extract the two `.wotmod` files.
+
+4. Launch World of Tanks and the labels will appear when looking at an enemy
+tank.
+
+### Install without zip file
+
 1. Download the [latest version](https://github.com/pademinune/Armor-Penetration-Calculator/releases) of `armor-calculator-x.x.x.wotmod` from releases.
 
 2. Download `guiflash_x.x.x.wotmod` from releases.
