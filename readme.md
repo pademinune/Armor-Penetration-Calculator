@@ -40,6 +40,9 @@ installation folder.
 4. Launch World of Tanks and the labels will appear when looking at an enemy
 tank.
 
+## Incompatibilities
+- Hitmarker mod found in ProMod
+
 ## Probability Details
 
 In World of Tanks, a shell's actual penetration is sampled from a Gaussian distribution ranging from 75% to 125% of its average penetration value. The 25% deviation from the mean is treated as the 3-sigma point.
