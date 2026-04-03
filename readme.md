@@ -12,6 +12,20 @@ I made this mod because I was unsatisfied with the options found in big modpacks
 
 This mod also tells you when a shot will ricochet.
 
+## Installation
+
+Since this mod relies on GUIFlash, you will need two `.wotmod` files.
+
+1. Download the latest version of `armor-pen-calc-x.x.x.wotmod` from releases.
+
+2. Download `GUIFlash.wotmod`.
+
+3. Put both mods in your `mods/x.x.x.x/` folder found in your local World of Tanks
+installation folder.
+
+4. Launch World of Tanks and the labels will appear when looking at an enemy
+tank.
+
 ## Probability Details
 
 In World of Tanks, a shell's actual penetration is sampled from a Gaussian distribution ranging from 75% to 125% of its average penetration value. The 25% deviation from the mean is treated as the 3-sigma point.
