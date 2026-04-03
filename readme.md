@@ -14,11 +14,11 @@ This mod also tells you when a shot will ricochet.
 
 ## Installation
 
-Since this mod relies on GUIFlash, you will need two `.wotmod` files.
+Since this mod relies on [GUIFlash](https://github.com/CH4MPi/GUIFlash), you will need two `.wotmod` files.
 
-1. Download the latest version of `armor-pen-calc-x.x.x.wotmod` from releases.
+1. Download the [latest version](https://github.com/pademinune/Armor-Penetration-Calculator/releases) of `armor-calculator-x.x.x.wotmod` from releases.
 
-2. Download `GUIFlash.wotmod`.
+2. Download `guiflash_x.x.x.wotmod` from releases.
 
 3. Put both mods in your `mods/x.x.x.x/` folder found in your local World of Tanks
 installation folder.
