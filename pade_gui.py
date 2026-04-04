@@ -1,8 +1,7 @@
 
-from colors import Colors
+from pade_constants import Colors, ArmorLabel, PenLabel
 from gambiter import g_guiFlash # type: ignore
 from gambiter.flash import COMPONENT_TYPE, COMPONENT_ALIGN # type: ignore
-
 
 ARMOR_ALIAS = "pademinune_ArmorPenLabel"
 PROB_ALIAS = "pademinune_ProbabilityLabel"
@@ -14,8 +13,13 @@ def log(message):
     print("pademinune's GuiTest mod: " + str(message))
 
 def update_armor_label(armor_value, color):
+    interior_label = ArmorLabel.LABEL_FORMAT.format(armor=armor_value)
+    new_text = "<font size='{font_size}' color='#{color}' face='$FieldFont'>{label_format}</font>".format(font_size=ArmorLabel.FONT_SIZE,
+                                                                                                          color=color,
+                                                                                                          label_format=interior_label)
+    
     armor_changes = {
-        'text': "<font size='25' color='#{}' face='$FieldFont'>{}mm</font>".format(color, armor_value),
+        'text': new_text,
         "visible": True,
     }
 
@@ -25,8 +29,13 @@ def update_armor_label(armor_value, color):
     g_guiFlash.updateComponent(ARMOR_ALIAS, armor_changes)
 
 def update_prob_label(prob, color):
+    interior_label = PenLabel.LABEL_FORMAT.format(prob=prob)
+    new_text = "<font size='{font_size}' color='#{color}' face='$FieldFont'>{label_format}</font>".format(font_size=PenLabel.FONT_SIZE,
+                                                                                                          color=color,
+                                                                                                          label_format=interior_label)
+
     prob_changes = {
-        'text': "<font size='25' color='#{}' face='$FieldFont'>{}%</font>".format(color, prob),
+        'text': new_text,
         "visible": True,
     }
 
@@ -80,7 +89,7 @@ log("Starting creation of armor and penetration gui components")
 
 armor_label_properties = {
     'isHtml': True,
-    'text': "<font size='25' color='#6BF40D' face='$FieldFont'>150mm</font>",
+    'text': "",
     'glowfilter': {
         'color': 0x000000,   # Black
         'alpha': 1,          # Solid
@@ -91,14 +100,14 @@ armor_label_properties = {
     },
     'alignX': COMPONENT_ALIGN.CENTER,
     'alignY': COMPONENT_ALIGN.CENTER,
-    'x': 0,
-    'y': 30,
+    'x': ArmorLabel.X_OFFSET,
+    'y': ArmorLabel.Y_OFFSET,
     "visible": False,
 }
 
 probability_label_properties = {
     'isHtml': True,
-    'text': "<font size='25' color='#6BF40D' face='$FieldFont'>100%</font>",
+    'text': "",
     'glowfilter': {
         'color': 0x000000,   # Black
         'alpha': 1,          # Solid
@@ -109,8 +118,8 @@ probability_label_properties = {
     },
     'alignX': COMPONENT_ALIGN.CENTER,
     'alignY': COMPONENT_ALIGN.CENTER,
-    'x': 0,
-    'y': 60,
+    'x': PenLabel.X_OFFSET,
+    'y': PenLabel.Y_OFFSET,
     "visible": False,
 }
 
