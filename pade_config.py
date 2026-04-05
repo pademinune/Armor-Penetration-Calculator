@@ -41,10 +41,14 @@ def read_config():
     
     return user_config
 
-if not os.path.isfile(CONFIG_PATH):
 
+if not os.path.isfile(CONFIG_PATH):
     create_config()
 
-user_settings = read_config()
-
+try:
+    user_settings = read_config()
+except:
+    # if the config is invalid, reset it
+    create_config()
+    user_settings = read_config()
 
