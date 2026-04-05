@@ -4,17 +4,30 @@
 <img width="300" height="328" alt="m4-34%" src="https://github.com/user-attachments/assets/0ac9168a-ffb3-41e4-a923-fd96e7ee82dd" />
 <img width="238" height="233" alt="m4-1%" src="https://github.com/user-attachments/assets/a48185c4-c4fe-46c5-9a62-b7ff40a48450" />
 
-*Photos were taken with a 125mm pen shell*
+*Photos were taken with a 125mm pen AP shell*
 
 ## Overview
 
 This mod displays the exact effective armor value and penetration probability of a tank you are aiming at.
 
-The mod factors in all relevant World of Tanks mechanics including shell-specific normalization, ricochet angles, spaced armor, and HEAT shell dissipation through spaced armor.
+The mod factors in all relevant World of Tanks mechanics including
+- Shell-specific normalization
+- Ricochet angles
+- Gun caliber overmatching
+- Spaced armor
+- HEAT shell dissipation through spaced armor
 
-I made this mod because I was unsatisfied with the options found in big modpacks: they never computed and displayed the exact probability.
+You can change the display settings (text size, color, position) using the config file found in `mods/configs/pademinune`.
+To revert back to default settings, just delete the config file and when you restart the game, the default file will be created again.
+
+*How is this different from other effective armor mods found in modpacks?*
+
+I made this mod because I was unsatisfied with the options found in big modpacks. They never computed and displayed
+the probability of penetrating.
 
 This mod also tells you when a shot will ricochet.
+
+It does not work with HE shells yet as they have different mechanics.
 
 ## Installation
 
