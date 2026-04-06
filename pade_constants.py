@@ -1,30 +1,31 @@
 
-from pade_config import user_settings
+from pade_config import user_settings, DEFAULT_CONFIG
 
+def safe_get_color(color):
+    default = DEFAULT_CONFIG.get("colors", "808080").get(color, "808080")
+    return user_settings.get("colors", default).get(color, default)
+
+def safe_get_setting(label, attribute):
+    default = DEFAULT_CONFIG[label][attribute]
+    return user_settings.get(label, default).get(attribute, default)
 
 class Colors:
-    # RED = "E90000"
-    # YELLOW = "FFFF00"
-    # ORANGE = "FFAD00"
-    # GREEN = "6BF40D"
-    # GREY = "808080"
-    # PURPLE = "800080"
-    RED = user_settings["colors"]["red_chance"]
+    RED = safe_get_color("red_chance")
     YELLOW = "FFFF00"
-    ORANGE = user_settings["colors"]["orange_chance"]
-    GREEN = user_settings["colors"]["green_chance"]
+    ORANGE = safe_get_color("orange_chance")
+    GREEN = safe_get_color("green_chance")
     GREY = "808080"
-    PURPLE = user_settings["colors"]["ricochet"]
+    PURPLE = safe_get_color("ricochet")
 
 class ArmorLabel:
-    LABEL_FORMAT = user_settings["armor_label"]["label_format"]
-    FONT_SIZE = user_settings["armor_label"]["font_size"]
-    X_OFFSET = user_settings["armor_label"]["x_offset"]
-    Y_OFFSET = user_settings["armor_label"]["y_offset"]
+    LABEL_FORMAT = safe_get_setting("armor_label", "label_format")
+    FONT_SIZE = safe_get_setting("armor_label", "font_size")
+    X_OFFSET = safe_get_setting("armor_label", "x_offset")
+    Y_OFFSET = safe_get_setting("armor_label", "y_offset")
 
 class PenLabel:
-    LABEL_FORMAT = user_settings["pen_label"]["label_format"]
-    FONT_SIZE = user_settings["pen_label"]["font_size"]
-    X_OFFSET = user_settings["pen_label"]["x_offset"]
-    Y_OFFSET = user_settings["pen_label"]["y_offset"]
+    LABEL_FORMAT = safe_get_setting("pen_label", "label_format")
+    FONT_SIZE = safe_get_setting("pen_label", "font_size")
+    X_OFFSET = safe_get_setting("pen_label", "x_offset")
+    Y_OFFSET = safe_get_setting("pen_label", "y_offset")
 
