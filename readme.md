@@ -31,7 +31,7 @@ Also, when aiming at a well armored tank, with this mod you can find the
 optimal spot to shoot that will maximize your chance of penning.
 
 ### Features
-- Displays exact effective armor value following game mechanics
+- Displays the exact effective armor value following game mechanics
     - Shell-specific normalization
     - Ricochet angles
     - Gun caliber overmatching
