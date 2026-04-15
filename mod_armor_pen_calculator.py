@@ -1,9 +1,9 @@
 
 import math
-from debug_utils import LOG_WARNING # type: ignore
 from AvatarInputHandler import gun_marker_ctrl # type: ignore
 from aih_constants import SHOT_RESULT as _SHOT_RESULT # type: ignore
 from PlayerEvents import g_playerEvents # type: ignore
+from AvatarInputHandler import AvatarInputHandler # type: ignore
 
 from pade_gui import update_gui, hide_labels, GuiState
 
@@ -46,7 +46,7 @@ def call_update_gui(avg_pen, min_pen, max_pen, armor_val, ricochet, hit_body):
     update_gui(armor_val, prob, ricochet, hit_body)
 
 
-log("Mod is loading")
+log('Mod is loading')
 
 # functin override
 def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, minPP, maxPP, entity):
@@ -171,12 +171,29 @@ def my_get_shot_result(cls, gunMarker, excludeTeam=0, piercingMultiplier=1):
         hide_labels()
     return result
 
-def on_avatar_ready():
+def on_load_match():
     """Called when the player spawns into a map."""
     if GuiState.is_visible:
         hide_labels()
 
-    # log("New match detected: Resetting UI state.")
+    # log("New match detected: Resetting GUI.")
+
+def on_leave_match():
+    """Called when the player leaves a match"""
+    if GuiState.is_visible:
+        hide_labels()
+
+    # log('Player has left the match. Resetting GUI.')
+
+original_activate_postmortem = AvatarInputHandler.activatePostmortem
+
+def my_activate_postmortem(self, *args, **kwargs):
+    """Called when your vehicle is destroyed"""
+    original_activate_postmortem(self, *args, **kwargs)
+
+    if GuiState.is_visible:
+        hide_labels()
+        # log('Player is dead. Hiding GUI.')
 
 # overriding source code functions
 
@@ -186,7 +203,13 @@ gun_marker_ctrl._CrosshairShotResults.getShotResult = classmethod(my_get_shot_re
 # Called only when looking at an enemy tank with non HE shell
 gun_marker_ctrl._CrosshairShotResults._CrosshairShotResults__shotResultDefault = classmethod(my_shot_result_default)
 
-# Called only once at the start of every match
-g_playerEvents.onAvatarReady += on_avatar_ready
+# Called only once at the start of every match when loading in
+g_playerEvents.onAvatarBecomePlayer += on_load_match
 
-log("Mod has finished loading")
+# Called once when the player leaves a match
+g_playerEvents.onAvatarBecomeNonPlayer += on_leave_match
+
+# Called when your tank is destroyed
+AvatarInputHandler.activatePostmortem = my_activate_postmortem
+
+log('Mod has finished loading')
