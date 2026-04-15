@@ -3,11 +3,13 @@ from pade_constants import Colors, ArmorLabel, PenLabel
 from gambiter import g_guiFlash # type: ignore
 from gambiter.flash import COMPONENT_TYPE, COMPONENT_ALIGN # type: ignore
 
-ARMOR_ALIAS = "pademinune_ArmorPenLabel"
-PROB_ALIAS = "pademinune_ProbabilityLabel"
+ARMOR_ALIAS = 'pademinune_ArmorPenLabel'
+PROB_ALIAS = 'pademinune_ProbabilityLabel'
+TRACK_ALIAS = 'pademinune_TrackLabel'
 
 class GuiState:
     is_visible = False
+    track_visible = False
 
 def log(message):
     print("pademinune's Gui: " + str(message))
@@ -18,10 +20,7 @@ def update_armor_label(armor_value, color):
                                                                                                           color=color,
                                                                                                           label_format=interior_label)
     
-    armor_changes = {
-        'text': new_text,
-        "visible": True,
-    }
+    armor_changes = {'text': new_text, 'visible': True}
 
     if not GuiState.is_visible:
         GuiState.is_visible = True
@@ -34,27 +33,43 @@ def update_prob_label(prob, color):
                                                                                                           color=color,
                                                                                                           label_format=interior_label)
 
-    prob_changes = {
-        'text': new_text,
-        "visible": True,
-    }
+    prob_changes = {'text': new_text, 'visible': True}
 
     if not GuiState.is_visible:
         GuiState.is_visible = True
     
     g_guiFlash.updateComponent(PROB_ALIAS, prob_changes)
 
-def hide_labels():
-    armor_changes = {"visible": False}
-    prob_changes = {"visible": False}
+def show_track_label():
+    if not GuiState.track_visible:
+        track_changes = {'visible': True}
+        g_guiFlash.updateComponent(TRACK_ALIAS, track_changes)
+        GuiState.track_visible = True
 
+
+def hide_track_label():
+    if GuiState.track_visible:
+        track_changes = {'visible': False}
+        g_guiFlash.updateComponent(TRACK_ALIAS, track_changes)
+        GuiState.track_visible = False
+
+def hide_labels():
     if GuiState.is_visible:
+        armor_changes = {'visible': False}
+        prob_changes = {'visible': False}
+        g_guiFlash.updateComponent(ARMOR_ALIAS, armor_changes)
+        g_guiFlash.updateComponent(PROB_ALIAS, prob_changes)
         GuiState.is_visible = False
 
-    g_guiFlash.updateComponent(ARMOR_ALIAS, armor_changes)
-    g_guiFlash.updateComponent(PROB_ALIAS, prob_changes)
+    if GuiState.track_visible:
+        hide_track_label()
 
-def update_gui(armor_value, prob, ricochet, hit_body):
+def update_gui(armor_value, prob, ricochet, hit_body, hit_track):
+
+    if hit_track and not GuiState.track_visible:
+        show_track_label()
+    elif not hit_track and GuiState.track_visible:
+        hide_track_label()
 
     if ricochet:
         # shell ricochet
@@ -84,12 +99,12 @@ def update_gui(armor_value, prob, ricochet, hit_body):
     update_prob_label(int(prob), color)
 
 
-log("Starting creation of armor and penetration gui components")
+log('Starting creation of armor and penetration gui components')
 
 
 armor_label_properties = {
     'isHtml': True,
-    'text': "",
+    'text': '',
     'glowfilter': {
         'color': 0x000000,   # Black
         'alpha': 1,          # Solid
@@ -102,12 +117,12 @@ armor_label_properties = {
     'alignY': COMPONENT_ALIGN.CENTER,
     'x': ArmorLabel.X_OFFSET,
     'y': ArmorLabel.Y_OFFSET,
-    "visible": False,
+    'visible': False,
 }
 
 probability_label_properties = {
     'isHtml': True,
-    'text': "",
+    'text': '',
     'glowfilter': {
         'color': 0x000000,   # Black
         'alpha': 1,          # Solid
@@ -120,7 +135,26 @@ probability_label_properties = {
     'alignY': COMPONENT_ALIGN.CENTER,
     'x': PenLabel.X_OFFSET,
     'y': PenLabel.Y_OFFSET,
-    "visible": False,
+    'visible': False,
+}
+
+track_label_properties = {
+    'image': '../../gui/tankmen/role/big/commander.png',
+    # 'isHtml': True,
+    # 'text': "<font size='20' color='#808080' face='$FieldFont'>Track</font>",
+    # 'glowfilter': {
+    #     'color': 0x000000,   # Black
+    #     'alpha': 1,          # Solid
+    #     'blurX': 3,          # Glow width
+    #     'blurY': 3,          # Glow height
+    #     'strength': 10,      # Higher = sharper outline
+    #     'quality': 2
+    # },
+    'alignX': COMPONENT_ALIGN.CENTER,
+    'alignY': COMPONENT_ALIGN.CENTER,
+    'x': PenLabel.X_OFFSET,
+    'y': PenLabel.Y_OFFSET + 30,
+    'visible': True,
 }
 
 
@@ -130,6 +164,9 @@ component_type = COMPONENT_TYPE.LABEL
 g_guiFlash.createComponent(ARMOR_ALIAS, component_type, armor_label_properties)
 # create the probability label
 g_guiFlash.createComponent(PROB_ALIAS, component_type, probability_label_properties)
+# create the track label
+g_guiFlash.createComponent(TRACK_ALIAS, component_type, track_label_properties)
 
-log("GUI components have been created!")
+
+log('GUI components have been created!')
 

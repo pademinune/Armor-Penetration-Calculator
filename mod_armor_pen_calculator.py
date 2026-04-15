@@ -37,13 +37,13 @@ def get_gaussian_probability(avg_pen, armor_val):
     
     return prob
 
-def call_update_gui(avg_pen, min_pen, max_pen, armor_val, ricochet, hit_body):
+def call_update_gui(avg_pen, armor_val, ricochet, hit_body, hit_track):
     
     prob = 0
     if not ricochet and hit_body:
         prob = get_gaussian_probability(avg_pen, armor_val)
 
-    update_gui(armor_val, prob, ricochet, hit_body)
+    update_gui(armor_val, prob, ricochet, hit_body, hit_track)
 
 
 log('Mod is loading')
@@ -55,6 +55,7 @@ def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower,
     total_armor_val = 0.0
     ricochet = False
     hit_body = False
+    hit_track = False
     
     # Since we are outside the class, we must use the mangled names
     isDestructible = cls._CrosshairShotResults__isDestructibleComponent
@@ -74,6 +75,13 @@ def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower,
     for cDetails in collisionsDetails:
         if not isDestructible(entity, cDetails.compName):
             break
+
+        # Track detection
+        # indexes are from client/vehicle_systems/tankStructure.py in source code
+        # 0 is chassis, >= 4 are extra track pairs
+        if not hit_track and (cDetails.compName == 0 or cDetails.compName >= 4):
+            hit_track = True
+
         if isJet:
             jetDist = cDetails.dist - jetStartDist
             if jetDist > 0.0:
@@ -155,9 +163,7 @@ def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower,
     sendDebug(gunMarker, debugPiercingsList, minPP, maxPP, fullPiercingPower)
 
     # pademinune armor mod calc
-    min_possible_pen = fullPiercingPower * 0.75
-    max_possible_pen = fullPiercingPower * 1.25
-    call_update_gui(fullPiercingPower, min_possible_pen, max_possible_pen, total_armor_val, ricochet, hit_body)
+    call_update_gui(fullPiercingPower, total_armor_val, ricochet, hit_body, hit_track)
 
     return result
 
