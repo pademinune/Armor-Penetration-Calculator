@@ -139,24 +139,14 @@ probability_label_properties = {
 }
 
 track_label_properties = {
-    'image': '../../gui/tankmen/role/big/commander.png',
-    # 'isHtml': True,
-    # 'text': "<font size='20' color='#808080' face='$FieldFont'>Track</font>",
-    # 'glowfilter': {
-    #     'color': 0x000000,   # Black
-    #     'alpha': 1,          # Solid
-    #     'blurX': 3,          # Glow width
-    #     'blurY': 3,          # Glow height
-    #     'strength': 10,      # Higher = sharper outline
-    #     'quality': 2
-    # },
+    'image': 'img://gui/pademinune/crosshair-16-green.png',
+    'alpha': 1,
+    'x': 0,
+    'y': 0,
     'alignX': COMPONENT_ALIGN.CENTER,
     'alignY': COMPONENT_ALIGN.CENTER,
-    'x': PenLabel.X_OFFSET,
-    'y': PenLabel.Y_OFFSET + 30,
-    'visible': True,
+    'visible': False,
 }
-
 
 component_type = COMPONENT_TYPE.LABEL
 
@@ -165,7 +155,7 @@ g_guiFlash.createComponent(ARMOR_ALIAS, component_type, armor_label_properties)
 # create the probability label
 g_guiFlash.createComponent(PROB_ALIAS, component_type, probability_label_properties)
 # create the track label
-g_guiFlash.createComponent(TRACK_ALIAS, component_type, track_label_properties)
+g_guiFlash.createComponent(TRACK_ALIAS, COMPONENT_TYPE.IMAGE, track_label_properties)
 
 
 log('GUI components have been created!')

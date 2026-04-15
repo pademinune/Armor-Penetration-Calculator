@@ -17,9 +17,9 @@ DEFAULT_CONFIG = {
         "label_format": "{prob}%",
     },
     "colors": {
-        "green_chance": "6BF40D",
+        "green_chance": "B6FF00",
         "orange_chance": "FFAD00",
-        "red_chance": "E90000",
+        "red_chance": "FF2717",
         "ricochet": "800080",
     }
 }
