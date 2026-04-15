@@ -10,7 +10,7 @@ class GuiState:
     is_visible = False
 
 def log(message):
-    print("pademinune's GuiTest mod: " + str(message))
+    print("pademinune's Gui: " + str(message))
 
 def update_armor_label(armor_value, color):
     interior_label = ArmorLabel.LABEL_FORMAT.format(armor=armor_value)

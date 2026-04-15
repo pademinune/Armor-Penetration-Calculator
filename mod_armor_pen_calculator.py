@@ -3,10 +3,13 @@ import math
 from debug_utils import LOG_WARNING # type: ignore
 from AvatarInputHandler import gun_marker_ctrl # type: ignore
 from aih_constants import SHOT_RESULT as _SHOT_RESULT # type: ignore
+from PlayerEvents import g_playerEvents # type: ignore
+
 from pade_gui import update_gui, hide_labels, GuiState
 
+
 def log(message):
-    LOG_WARNING("pademinune: " + str(message))
+    print("pademinune's Armor Calc: " + str(message))
 
 def get_gaussian_probability(avg_pen, armor_val):
     min_pen = avg_pen * 0.75
@@ -47,6 +50,7 @@ log("Mod is loading")
 
 # functin override
 def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, minPP, maxPP, entity):
+    """Override for getShotResultDefault in game code. Is only called when looking at an enemy tank with non HE loaded."""
     # pademinune armor mod variables
     total_armor_val = 0.0
     ricochet = False
@@ -160,16 +164,29 @@ def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower,
 original_getShotResult = gun_marker_ctrl._CrosshairShotResults.getShotResult.__func__
 
 def my_get_shot_result(cls, gunMarker, excludeTeam=0, piercingMultiplier=1):
+    """Override for original getShotResult. Is only called when reticle is visible."""
     result = original_getShotResult(cls, gunMarker, excludeTeam, piercingMultiplier)
     if result == _SHOT_RESULT.UNDEFINED and GuiState.is_visible:
         # only call hide if the gui is still visible
         hide_labels()
     return result
 
+def on_avatar_ready():
+    """Called when the player spawns into a map."""
+    if GuiState.is_visible:
+        hide_labels()
+
+    # log("New match detected: Resetting UI state.")
 
 # overriding source code functions
+
+# Called whenever reticle is visible
 gun_marker_ctrl._CrosshairShotResults.getShotResult = classmethod(my_get_shot_result)
 
+# Called only when looking at an enemy tank with non HE shell
 gun_marker_ctrl._CrosshairShotResults._CrosshairShotResults__shotResultDefault = classmethod(my_shot_result_default)
+
+# Called only once at the start of every match
+g_playerEvents.onAvatarReady += on_avatar_ready
 
 log("Mod has finished loading")
