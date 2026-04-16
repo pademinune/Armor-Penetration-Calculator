@@ -21,7 +21,10 @@ DEFAULT_CONFIG = {
         "orange_chance": "FFAD00",
         "red_chance": "FF2717",
         "ricochet": "800080",
-    }
+    },
+    'track_label': {
+        'enabled': True,
+    },
 }
 
 CONFIG_FOLDER = os.path.join('mods', 'configs', 'pademinune')

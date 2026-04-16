@@ -1,11 +1,14 @@
 
-from pade_constants import Colors, ArmorLabel, PenLabel
+from pade_constants import Colors, ArmorLabel, PenLabel, TrackLabel
 from gambiter import g_guiFlash # type: ignore
 from gambiter.flash import COMPONENT_TYPE, COMPONENT_ALIGN # type: ignore
 
 ARMOR_ALIAS = 'pademinune_ArmorPenLabel'
 PROB_ALIAS = 'pademinune_ProbabilityLabel'
 TRACK_ALIAS = 'pademinune_TrackLabel'
+GREEN_TRACK_ALIAS = 'pademinune_GreenTrack'
+ORANGE_TRACK_ALIAS = 'pademinune_OrangeTrack'
+RED_TRACK_ALIAS = 'pademinune_RedTrack'
 
 class GuiState:
     is_visible = False
@@ -40,17 +43,32 @@ def update_prob_label(prob, color):
     
     g_guiFlash.updateComponent(PROB_ALIAS, prob_changes)
 
-def show_track_label():
+def update_track_label(color):
+    make_visible = {'visible': True}
+    make_invisible = {'visible': False}
+    if color == Colors.GREEN:
+        g_guiFlash.updateComponent(GREEN_TRACK_ALIAS, make_visible)
+        g_guiFlash.updateComponent(ORANGE_TRACK_ALIAS, make_invisible)
+        g_guiFlash.updateComponent(RED_TRACK_ALIAS, make_invisible)
+    elif color == Colors.ORANGE:
+        g_guiFlash.updateComponent(GREEN_TRACK_ALIAS, make_invisible)
+        g_guiFlash.updateComponent(ORANGE_TRACK_ALIAS, make_visible)
+        g_guiFlash.updateComponent(RED_TRACK_ALIAS, make_invisible)
+    elif color == Colors.RED:
+        g_guiFlash.updateComponent(GREEN_TRACK_ALIAS, make_invisible)
+        g_guiFlash.updateComponent(ORANGE_TRACK_ALIAS, make_invisible)
+        g_guiFlash.updateComponent(RED_TRACK_ALIAS, make_visible)
+
     if not GuiState.track_visible:
-        track_changes = {'visible': True}
-        g_guiFlash.updateComponent(TRACK_ALIAS, track_changes)
         GuiState.track_visible = True
 
 
 def hide_track_label():
     if GuiState.track_visible:
         track_changes = {'visible': False}
-        g_guiFlash.updateComponent(TRACK_ALIAS, track_changes)
+        g_guiFlash.updateComponent(GREEN_TRACK_ALIAS, track_changes)
+        g_guiFlash.updateComponent(ORANGE_TRACK_ALIAS, track_changes)
+        g_guiFlash.updateComponent(RED_TRACK_ALIAS, track_changes)
         GuiState.track_visible = False
 
 def hide_labels():
@@ -66,9 +84,7 @@ def hide_labels():
 
 def update_gui(armor_value, prob, ricochet, hit_body, hit_track):
 
-    if hit_track and not GuiState.track_visible:
-        show_track_label()
-    elif not hit_track and GuiState.track_visible:
+    if not hit_track and GuiState.track_visible:
         hide_track_label()
 
     if ricochet:
@@ -76,6 +92,8 @@ def update_gui(armor_value, prob, ricochet, hit_body, hit_track):
         color = Colors.PURPLE
         update_armor_label("-", color)
         update_prob_label(0, color)
+        if hit_track and TrackLabel.ENABLED:
+            update_track_label(Colors.RED)
         return
     
     if not hit_body:
@@ -83,6 +101,8 @@ def update_gui(armor_value, prob, ricochet, hit_body, hit_track):
         color = Colors.RED
         update_armor_label("-", color)
         update_prob_label(0, color)
+        if hit_track and TrackLabel.ENABLED:
+            update_track_label(Colors.RED)
         return
     
     color = Colors.GREY
@@ -97,6 +117,8 @@ def update_gui(armor_value, prob, ricochet, hit_body, hit_track):
     
     update_armor_label(int(armor_value), color)
     update_prob_label(int(prob), color)
+    if hit_track and TrackLabel.ENABLED:
+        update_track_label(color)
 
 
 log('Starting creation of armor and penetration gui components')
@@ -138,8 +160,8 @@ probability_label_properties = {
     'visible': False,
 }
 
-track_label_properties = {
-    'image': 'img://gui/pademinune/crosshair-16-green.png',
+green_track_properties = {
+    'image': 'img://gui/maps/icons/pademinune/crosshair-16-green.png',
     'alpha': 1,
     'x': 0,
     'y': 0,
@@ -148,15 +170,34 @@ track_label_properties = {
     'visible': False,
 }
 
-component_type = COMPONENT_TYPE.LABEL
+orange_track_properties = {
+    'image': 'img://gui/maps/icons/pademinune/crosshair-16-orange.png',
+    'alpha': 1,
+    'x': 0,
+    'y': 0,
+    'alignX': COMPONENT_ALIGN.CENTER,
+    'alignY': COMPONENT_ALIGN.CENTER,
+    'visible': False,
+}
+
+red_track_properties = {
+    'image': 'img://gui/maps/icons/pademinune/crosshair-16-red.png',
+    'alpha': 1,
+    'x': 0,
+    'y': 0,
+    'alignX': COMPONENT_ALIGN.CENTER,
+    'alignY': COMPONENT_ALIGN.CENTER,
+    'visible': False,
+}
 
 # create the armor value label
-g_guiFlash.createComponent(ARMOR_ALIAS, component_type, armor_label_properties)
+g_guiFlash.createComponent(ARMOR_ALIAS, COMPONENT_TYPE.LABEL, armor_label_properties)
 # create the probability label
-g_guiFlash.createComponent(PROB_ALIAS, component_type, probability_label_properties)
-# create the track label
-g_guiFlash.createComponent(TRACK_ALIAS, COMPONENT_TYPE.IMAGE, track_label_properties)
-
+g_guiFlash.createComponent(PROB_ALIAS, COMPONENT_TYPE.LABEL, probability_label_properties)
+# create the track labels
+g_guiFlash.createComponent(GREEN_TRACK_ALIAS, COMPONENT_TYPE.IMAGE, green_track_properties)
+g_guiFlash.createComponent(ORANGE_TRACK_ALIAS, COMPONENT_TYPE.IMAGE, orange_track_properties)
+g_guiFlash.createComponent(RED_TRACK_ALIAS, COMPONENT_TYPE.IMAGE, red_track_properties)
 
 log('GUI components have been created!')
 
