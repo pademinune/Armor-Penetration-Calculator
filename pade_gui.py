@@ -83,42 +83,39 @@ def hide_labels():
         hide_track_label()
 
 def update_gui(armor_value, prob, ricochet, hit_body, hit_track):
-
-    if not hit_track and GuiState.track_visible:
-        hide_track_label()
-
+    
     if ricochet:
         # shell ricochet
         color = Colors.PURPLE
         update_armor_label("-", color)
         update_prob_label(0, color)
-        if hit_track and TrackLabel.ENABLED:
-            update_track_label(Colors.RED)
-        return
-    
-    if not hit_body:
+        # if hit_track and TrackLabel.ENABLED:
+        #     update_track_label(Colors.RED)
+    elif not hit_body:
         # shell only hits spaced armor or tracks
         color = Colors.RED
         update_armor_label("-", color)
         update_prob_label(0, color)
-        if hit_track and TrackLabel.ENABLED:
-            update_track_label(Colors.RED)
-        return
-    
-    color = Colors.GREY
-    if prob <= 7:
-        # armor_val is right of z = 1.5
-        color = Colors.RED
-    elif prob >= 93:
-        # armor_val is left of z = -1.5
-        color = Colors.GREEN
+        # if hit_track and TrackLabel.ENABLED:
+        #     update_track_label(Colors.RED)
     else:
-        color = Colors.ORANGE
+        color = Colors.GREY
+        if prob <= 7:
+            # armor_val is right of z = 1.5
+            color = Colors.RED
+        elif prob >= 93:
+            # armor_val is left of z = -1.5
+            color = Colors.GREEN
+        else:
+            color = Colors.ORANGE
+        
+        update_armor_label(int(armor_value), color)
+        update_prob_label(int(prob), color)
     
-    update_armor_label(int(armor_value), color)
-    update_prob_label(int(prob), color)
-    if hit_track and TrackLabel.ENABLED:
+    if hit_track and TrackLabel.ENABLED and color == Colors.GREEN:
         update_track_label(color)
+    else:
+        hide_track_label()
 
 
 log('Starting creation of armor and penetration gui components')
