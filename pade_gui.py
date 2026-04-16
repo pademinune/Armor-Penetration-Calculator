@@ -112,7 +112,7 @@ def update_gui(armor_value, prob, ricochet, hit_body, hit_track):
         update_armor_label(int(armor_value), color)
         update_prob_label(int(prob), color)
     
-    if hit_track and TrackLabel.ENABLED and color == Colors.GREEN:
+    if hit_track and TrackLabel.ENABLED and (color == Colors.GREEN or color == Colors.ORANGE):
         update_track_label(color)
     else:
         hide_track_label()
