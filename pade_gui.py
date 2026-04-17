@@ -124,9 +124,9 @@ def update_gui(armor_value, prob, ricochet, hit_body, hit_track):
         update_prob_label(int(prob), color)
     
     if hit_track and TrackLabel.ENABLED and (color == Colors.GREEN or color == Colors.ORANGE):
-        show_green_track_label()
+        update_track_label(color)
     else:
-        hide_green_track_label()
+        hide_track_label()
 
 
 log('Starting creation of armor and penetration gui components')
