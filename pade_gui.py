@@ -62,6 +62,17 @@ def update_track_label(color):
     if not GuiState.track_visible:
         GuiState.track_visible = True
 
+def show_green_track_label():
+    if not GuiState.track_visible:
+        make_visible = {'visible': True}
+        g_guiFlash.updateComponent(GREEN_TRACK_ALIAS, make_visible)
+        GuiState.track_visible = True
+
+def hide_green_track_label():
+    if GuiState.track_visible:
+        make_invisible = {'visible': False}
+        g_guiFlash.updateComponent(GREEN_TRACK_ALIAS, make_invisible)
+        GuiState.track_visible = False
 
 def hide_track_label():
     if GuiState.track_visible:
@@ -113,9 +124,9 @@ def update_gui(armor_value, prob, ricochet, hit_body, hit_track):
         update_prob_label(int(prob), color)
     
     if hit_track and TrackLabel.ENABLED and (color == Colors.GREEN or color == Colors.ORANGE):
-        update_track_label(color)
+        show_green_track_label()
     else:
-        hide_track_label()
+        hide_green_track_label()
 
 
 log('Starting creation of armor and penetration gui components')
