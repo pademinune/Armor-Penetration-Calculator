@@ -140,7 +140,7 @@ armor_label_properties = {
         'alpha': 1,          # Solid
         'blurX': 3,          # Glow width
         'blurY': 3,          # Glow height
-        'strength': 10,      # Higher = sharper outline
+        'strength': 6,      # Higher = sharper outline
         'quality': 2
     },
     'alignX': COMPONENT_ALIGN.CENTER,
@@ -158,7 +158,7 @@ probability_label_properties = {
         'alpha': 1,          # Solid
         'blurX': 3,          # Glow width
         'blurY': 3,          # Glow height
-        'strength': 10,      # Higher = sharper outline
+        'strength': 6,      # Higher = sharper outline
         'quality': 2
     },
     'alignX': COMPONENT_ALIGN.CENTER,
