@@ -123,5 +123,15 @@ g_guiFlash.createComponent(ARMOR_ALIAS, COMPONENT_TYPE.LABEL, armor_label_proper
 # create the probability label
 g_guiFlash.createComponent(PROB_ALIAS, COMPONENT_TYPE.LABEL, probability_label_properties)
 
-log('GUI components have been created!')
 
+def update_label_properties():
+    g_guiFlash.updateComponent(ARMOR_ALIAS, {
+        'x': ArmorLabel.X_OFFSET,
+        'y': ArmorLabel.Y_OFFSET,
+    })
+    g_guiFlash.updateComponent(PROB_ALIAS, {
+        'x': PenLabel.X_OFFSET,
+        'y': PenLabel.Y_OFFSET,
+    })
+
+log('GUI components have been created!')
