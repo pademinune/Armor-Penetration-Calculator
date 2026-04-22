@@ -22,9 +22,6 @@ DEFAULT_CONFIG = {
         "red_chance": "FF2717",
         "ricochet": "800080",
     },
-    'track_label': {
-        'enabled': True,
-    },
 }
 
 CONFIG_FOLDER = os.path.join('mods', 'configs', 'pademinune')
@@ -43,6 +40,31 @@ def read_config():
         user_config = json.load(file)
     
     return user_config
+
+def save_flat_config(settings):
+    config = {
+        "armor_label": {
+            "x_offset": settings['armor_label_x_offset'],
+            "y_offset": settings['armor_label_y_offset'],
+            "font_size": settings['armor_label_font_size'],
+            "label_format": settings['armor_label_format'],
+        },
+        "pen_label": {
+            "x_offset": settings['pen_label_x_offset'],
+            "y_offset": settings['pen_label_y_offset'],
+            "font_size": settings['pen_label_font_size'],
+            "label_format": settings['pen_label_format'],
+        },
+        "colors": {
+            "green_chance": settings['color_green'],
+            "orange_chance": settings['color_orange'],
+            "red_chance": settings['color_red'],
+            "ricochet": settings['color_ricochet'],
+        },
+    }
+
+    with open(CONFIG_PATH, 'w') as f:
+        json.dump(config, f, indent=4)
 
 
 if not os.path.isfile(CONFIG_PATH):
