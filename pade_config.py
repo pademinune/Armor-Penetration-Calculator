@@ -12,8 +12,8 @@ DEFAULT_CONFIG = {
     },
     "pen_label": {
         "x_offset": 0,
-        "y_offset": 55,
-        "font_size": 18,
+        "y_offset": 50,
+        "font_size": 16,
         "label_format": "{prob}%",
     },
     "colors": {
