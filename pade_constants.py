@@ -2,12 +2,22 @@
 from pade_config import user_settings, DEFAULT_CONFIG
 
 def safe_get_color(color):
-    default = DEFAULT_CONFIG.get("colors", "808080").get(color, "808080")
-    return user_settings.get("colors", default).get(color, default)
+    default = DEFAULT_CONFIG['colors'][color]
+    
+    setting = user_settings.get('colors', default)
+    if type(setting) == dict:
+        setting = user_settings.get(color, default)
+
+    return setting
 
 def safe_get_setting(label, attribute):
     default = DEFAULT_CONFIG[label][attribute]
-    return user_settings.get(label, default).get(attribute, default)
+
+    setting = user_settings.get(label, default)
+    if type(setting) == dict:
+        setting = setting.get(attribute, default)
+
+    return setting
 
 class Colors:
     RED = safe_get_color("red_chance")

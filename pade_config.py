@@ -12,8 +12,8 @@ DEFAULT_CONFIG = {
     },
     "pen_label": {
         "x_offset": 0,
-        "y_offset": 55,
-        "font_size": 18,
+        "y_offset": 50,
+        "font_size": 16,
         "label_format": "{prob}%",
     },
     "colors": {
@@ -21,10 +21,7 @@ DEFAULT_CONFIG = {
         "orange_chance": "FFAD00",
         "red_chance": "FF2717",
         "ricochet": "800080",
-    },
-    'track_label': {
-        'enabled': True,
-    },
+    }
 }
 
 CONFIG_FOLDER = os.path.join('mods', 'configs', 'pademinune')

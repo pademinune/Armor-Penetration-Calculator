@@ -169,7 +169,7 @@ probability_label_properties = {
 }
 
 green_track_properties = {
-    'image': 'img://gui/maps/icons/pademinune/crosshair-16-green.png',
+    'image': 'img://gui/pademinune/crosshair-16-green.png',
     'alpha': 1,
     'x': 0,
     'y': 0,
@@ -179,7 +179,7 @@ green_track_properties = {
 }
 
 orange_track_properties = {
-    'image': 'img://gui/maps/icons/pademinune/crosshair-16-orange.png',
+    'image': 'img://gui/pademinune/crosshair-16-orange.png',
     'alpha': 1,
     'x': 0,
     'y': 0,
@@ -189,7 +189,7 @@ orange_track_properties = {
 }
 
 red_track_properties = {
-    'image': 'img://gui/maps/icons/pademinune/crosshair-16-red.png',
+    'image': 'img://gui/pademinune/crosshair-16-red.png',
     'alpha': 1,
     'x': 0,
     'y': 0,
