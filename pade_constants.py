@@ -30,4 +30,4 @@ class PenLabel:
     Y_OFFSET = safe_get_setting("pen_label", "y_offset")
 
 class TrackLabel:
-    ENABLED = safe_get_setting('track_label', 'enabled')
+    ENABLED = True
