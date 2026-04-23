@@ -41,39 +41,24 @@ optimal spot to shoot that will maximize your chance of penning.
 - Tells you if a shot will be a ricochet
 - Great performance since the mod uses the calculatons already done
 by the game
-- Customize the mod to your liking by changing the config file
+- Customize the mod to your liking by changing the settings
 
 ### Config
-You can change the display settings (text size, color, position) using the config file found in `mods/configs/pademinune`.
-To revert back to default settings, just delete the config file and when you restart the game, the default file will be created again.
+There is a settings gui for the config you can edit in the garage.
 
+You can also change the display settings (text size, color, position) using the config file found in `mods/configs/pademinune`.
+To revert back to default settings, just delete the config file and when you restart the game, the default file will be created again.
 
 \*It does not work with HE shells yet as they have different mechanics.
 
 ## Installation
-
-Since this mod relies on [GUIFlash](https://github.com/CH4MPi/GUIFlash), you will need two `.wotmod` files.
-
-### Install using the zip file (Recommended)
 
 1. Download `unzip-me.zip` from the [latest release](https://github.com/pademinune/Armor-Penetration-Calculator/releases).
 
 2. Put the zip file in your `mods/x.x.x.x/` folder found in your local
 World of Tanks installation folder.
 
-3. Unzip and extract the two `.wotmod` files into that folder.
-
-4. Launch World of Tanks and the labels will appear when looking at an enemy
-tank.
-
-### Install without the zip file
-
-1. Download the [latest version](https://github.com/pademinune/Armor-Penetration-Calculator/releases) of `armor-calculator-x.x.x.wotmod` from releases.
-
-2. Download `guiflash_x.x.x.wotmod` from releases.
-
-3. Put both mods in your `mods/x.x.x.x/` folder found in your local World of Tanks
-installation folder.
+3. Unzip and extract the `.wotmod` files into that folder.
 
 4. Launch World of Tanks and the labels will appear when looking at an enemy
 tank.
