@@ -81,8 +81,8 @@ def on_settings_save(linkage, new_settings):
         Colors.RED = new_settings['color_red']
         Colors.PURPLE = new_settings['color_ricochet']
 
-    save_flat_config(new_settings)
-    update_label_properties()
+        save_flat_config(new_settings)
+        update_label_properties()
 
 
 g_modsSettingsApi.setModTemplate(mod_linkage, template, on_settings_save, None)
