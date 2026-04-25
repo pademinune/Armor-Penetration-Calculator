@@ -3,6 +3,7 @@
 <img width="284" height="270" alt="m4-100%" src="https://github.com/user-attachments/assets/bb634f0c-cd3c-4324-bae8-8f33afb2cd0c" />
 <img width="300" height="328" alt="m4-34%" src="https://github.com/user-attachments/assets/0ac9168a-ffb3-41e4-a923-fd96e7ee82dd" />
 <img width="238" height="233" alt="m4-1%" src="https://github.com/user-attachments/assets/a48185c4-c4fe-46c5-9a62-b7ff40a48450" />
+<img width="899" height="502" alt="image" src="https://github.com/user-attachments/assets/c9ffc0cd-4086-4d2b-8fc7-a05d64f3c6b6" />
 
 *Photos were taken with a 125mm pen AP shell*
 
@@ -41,39 +42,24 @@ optimal spot to shoot that will maximize your chance of penning.
 - Tells you if a shot will be a ricochet
 - Great performance since the mod uses the calculatons already done
 by the game
-- Customize the mod to your liking by changing the config file
+- Customize the mod to your liking by changing the settings
 
 ### Config
-You can change the display settings (text size, color, position) using the config file found in `mods/configs/pademinune`.
-To revert back to default settings, just delete the config file and when you restart the game, the default file will be created again.
+There is a settings gui for the config you can edit in the garage.
 
+You can also change the display settings (text size, color, position) using the config file found in `mods/configs/pademinune`.
+To revert back to default settings, just delete the config file and when you restart the game, the default file will be created again.
 
 \*It does not work with HE shells yet as they have different mechanics.
 
 ## Installation
-
-Since this mod relies on [GUIFlash](https://github.com/CH4MPi/GUIFlash), you will need two `.wotmod` files.
-
-### Install using the zip file (Recommended)
 
 1. Download `unzip-me.zip` from the [latest release](https://github.com/pademinune/Armor-Penetration-Calculator/releases).
 
 2. Put the zip file in your `mods/x.x.x.x/` folder found in your local
 World of Tanks installation folder.
 
-3. Unzip and extract the two `.wotmod` files into that folder.
-
-4. Launch World of Tanks and the labels will appear when looking at an enemy
-tank.
-
-### Install without the zip file
-
-1. Download the [latest version](https://github.com/pademinune/Armor-Penetration-Calculator/releases) of `armor-calculator-x.x.x.wotmod` from releases.
-
-2. Download `guiflash_x.x.x.wotmod` from releases.
-
-3. Put both mods in your `mods/x.x.x.x/` folder found in your local World of Tanks
-installation folder.
+3. Unzip and extract the `.wotmod` files into that folder.
 
 4. Launch World of Tanks and the labels will appear when looking at an enemy
 tank.
