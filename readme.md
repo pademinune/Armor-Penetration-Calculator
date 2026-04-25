@@ -9,6 +9,8 @@
 
 ## Overview
 
+For questions or mod support join the [Discord server](https://discord.gg/PrzqyneRXv).
+
 This mod displays the exact effective armor value and penetration probability of a tank you are aiming at.
 
 > *How is this different from other effective armor mods found in modpacks?*
