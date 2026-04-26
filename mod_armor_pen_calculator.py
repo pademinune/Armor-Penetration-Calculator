@@ -1,9 +1,8 @@
-
 import math
-from AvatarInputHandler import gun_marker_ctrl # type: ignore
-from aih_constants import SHOT_RESULT as _SHOT_RESULT # type: ignore
-from PlayerEvents import g_playerEvents # type: ignore
-from AvatarInputHandler import AvatarInputHandler # type: ignore
+from AvatarInputHandler import gun_marker_ctrl  # type: ignore
+from aih_constants import SHOT_RESULT as _SHOT_RESULT  # type: ignore
+from PlayerEvents import g_playerEvents  # type: ignore
+from AvatarInputHandler import AvatarInputHandler  # type: ignore
 
 from pade_gui import update_gui, hide_labels, GuiState
 
@@ -11,34 +10,36 @@ from pade_gui import update_gui, hide_labels, GuiState
 def log(message):
     print("pademinune's Armor Calc: " + str(message))
 
+
 def get_gaussian_probability(avg_pen, armor_val):
     min_pen = avg_pen * 0.75
     max_pen = avg_pen * 1.25
 
-    if armor_val <= min_pen: 
+    if armor_val <= min_pen:
         return 100.0
-    if armor_val >= max_pen: 
+    if armor_val >= max_pen:
         return 0.0
-    
+
     # 12 * (armor_val - avg_pen) / (avg_pen)
     # If 25% is the 3-sigma point:
     # avg_pen * 0.25 = 3 SD.
     standard_deviation = avg_pen / 12
-    
+
     # z-score
     z = (armor_val - avg_pen) / standard_deviation
-    
+
     # Cumulative Distribution Function (CDF)
     # P(pen < armor)
     phi = 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
-    
+
     # get area to the right P(pen > armor)
     prob = (1.0 - phi) * 100
-    
+
     return prob
 
+
 def call_update_gui(avg_pen, armor_val, ricochet, hit_body, hit_track):
-    
+
     prob = 0
     if not ricochet and hit_body:
         prob = get_gaussian_probability(avg_pen, armor_val)
@@ -46,22 +47,28 @@ def call_update_gui(avg_pen, armor_val, ricochet, hit_body, hit_track):
     update_gui(armor_val, prob, ricochet, hit_body, hit_track)
 
 
-log('Mod is loading')
+log("Mod is loading")
+
 
 # functin override
-def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, minPP, maxPP, entity):
-    """Override for getShotResultDefault in game code. Is only called when looking at an enemy tank with non HE loaded."""
+def my_shot_result_default(
+    cls, gunMarker, collisionsDetails, fullPiercingPower, shell, minPP, maxPP, entity
+):
+    """
+    Override for getShotResultDefault in game code.
+    Is only called when looking at an enemy tank with non HE loaded.
+    """
     # pademinune armor mod variables
     total_armor_val = 0.0
     ricochet = False
     hit_body = False
     hit_track = False
-    
+
     # Since we are outside the class, we must use the mangled names
     isDestructible = cls._CrosshairShotResults__isDestructibleComponent
     collectDebug = cls._CrosshairShotResults__collectDebugPiercingData
     sendDebug = cls._CrosshairShotResults__sendDebugInfo
-    
+
     result = _SHOT_RESULT.NOT_PIERCED
     isJet = False
     jetStartDist = None
@@ -85,17 +92,21 @@ def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower,
         if isJet:
             jetDist = cDetails.dist - jetStartDist
             if jetDist > 0.0:
-                lossByDist = 1.0 - jetDist * cls._SHELL_EXTRA_DATA[shell.kind].jetLossPPByDist
-                
+                lossByDist = (
+                    1.0 - jetDist * cls._SHELL_EXTRA_DATA[shell.kind].jetLossPPByDist
+                )
+
                 # add dissipation amount onto total armor
-                lost_pen = max(0, piercingPower * (1 - lossByDist)) # max ensures no negative penetration dropoffs (when models overlap)
+                lost_pen = max(
+                    0, piercingPower * (1 - lossByDist)
+                )  # max ensures no negative penetration dropoffs (when models overlap)
                 total_armor_val += lost_pen
                 # log("heat dropoff: {}mm".format(lost_pen))
 
                 piercingPower *= lossByDist
                 minPiercingPower = round(minPiercingPower * lossByDist)
                 maxPiercingPower = round(maxPiercingPower * lossByDist)
-        
+
         if cDetails.matInfo is None:
             result = cls._CRIT_ONLY_SHOT_RESULT
         else:
@@ -105,24 +116,38 @@ def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower,
             if matInfo.armor is None:
                 result = _SHOT_RESULT.UNDEFINED
                 continue
-                
+
             hitAngleCos = cDetails.hitAngleCos if matInfo.useHitAngle else 1.0
             piercingPercent = 1000.0
-            
+
             if not isJet and cls._shouldRicochet(shell, hitAngleCos, matInfo):
                 # shell ricochet
                 ricochet = True
-                collectDebug(debugPiercingsList, None, hitAngleCos, minPiercingPower, maxPiercingPower, piercingPercent, matInfo, _SHOT_RESULT.NOT_PIERCED)
+                collectDebug(
+                    debugPiercingsList,
+                    None,
+                    hitAngleCos,
+                    minPiercingPower,
+                    maxPiercingPower,
+                    piercingPercent,
+                    matInfo,
+                    _SHOT_RESULT.NOT_PIERCED,
+                )
                 break
-                
+
             penetrationArmor = 0
             if piercingPower > 0.0:
-                penetrationArmor = cls._computePenetrationArmor(shell, hitAngleCos, matInfo)
-                
+                penetrationArmor = cls._computePenetrationArmor(
+                    shell, hitAngleCos, matInfo
+                )
+
                 # add to total armor counter
                 total_armor_val += penetrationArmor
-                
-                piercingPercent = 100.0 + (penetrationArmor - piercingPower) / fullPiercingPower * 100.0
+
+                piercingPercent = (
+                    100.0
+                    + (penetrationArmor - piercingPower) / fullPiercingPower * 100.0
+                )
                 piercingPower -= penetrationArmor
                 minPiercingPower = round(minPiercingPower - penetrationArmor)
                 maxPiercingPower = round(maxPiercingPower - penetrationArmor)
@@ -134,7 +159,16 @@ def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower,
                     result = _SHOT_RESULT.LITTLE_PIERCED
                 elif piercingPercent <= minPP:
                     result = _SHOT_RESULT.GREAT_PIERCED
-                collectDebug(debugPiercingsList, penetrationArmor, hitAngleCos, minPiercingPower, maxPiercingPower, piercingPercent, matInfo, result)
+                collectDebug(
+                    debugPiercingsList,
+                    penetrationArmor,
+                    hitAngleCos,
+                    minPiercingPower,
+                    maxPiercingPower,
+                    piercingPercent,
+                    matInfo,
+                    result,
+                )
                 break
             else:
                 # spaced armor
@@ -146,14 +180,23 @@ def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower,
                 if matInfo.extra:
                     if piercingPercent <= maxPP:
                         result = cls._CRIT_ONLY_SHOT_RESULT
-                collectDebug(debugPiercingsList, penetrationArmor, hitAngleCos, minPiercingPower, maxPiercingPower, piercingPercent, matInfo, debugResut)
-            
+                collectDebug(
+                    debugPiercingsList,
+                    penetrationArmor,
+                    hitAngleCos,
+                    minPiercingPower,
+                    maxPiercingPower,
+                    piercingPercent,
+                    matInfo,
+                    debugResut,
+                )
+
             if matInfo.collideOnceOnly:
                 ignoredMaterials.add((cDetails.compName, matInfo.kind))
-        
+
         if piercingPower <= 0.0:
             break
-            
+
         if cls._SHELL_EXTRA_DATA[shell.kind].jetLossPPByDist > 0.0:
             isJet = True
             mInfo = cDetails.matInfo
@@ -167,7 +210,9 @@ def my_shot_result_default(cls, gunMarker, collisionsDetails, fullPiercingPower,
 
     return result
 
+
 original_getShotResult = gun_marker_ctrl._CrosshairShotResults.getShotResult.__func__
+
 
 def my_get_shot_result(cls, gunMarker, excludeTeam=0, piercingMultiplier=1):
     """Override for original getShotResult. Is only called when reticle is visible."""
@@ -177,12 +222,14 @@ def my_get_shot_result(cls, gunMarker, excludeTeam=0, piercingMultiplier=1):
         hide_labels()
     return result
 
+
 def on_load_match():
     """Called when the player spawns into a map."""
     if GuiState.is_visible:
         hide_labels()
 
     # log("New match detected: Resetting GUI.")
+
 
 def on_leave_match():
     """Called when the player leaves a match"""
@@ -191,7 +238,9 @@ def on_leave_match():
 
     # log('Player has left the match. Resetting GUI.')
 
+
 original_activate_postmortem = AvatarInputHandler.activatePostmortem
+
 
 def my_activate_postmortem(self, *args, **kwargs):
     """Called when your vehicle is destroyed"""
@@ -201,13 +250,16 @@ def my_activate_postmortem(self, *args, **kwargs):
         hide_labels()
         # log('Player is dead. Hiding GUI.')
 
+
 # overriding source code functions
 
 # Called whenever reticle is visible
 gun_marker_ctrl._CrosshairShotResults.getShotResult = classmethod(my_get_shot_result)
 
 # Called only when looking at an enemy tank with non HE shell
-gun_marker_ctrl._CrosshairShotResults._CrosshairShotResults__shotResultDefault = classmethod(my_shot_result_default)
+gun_marker_ctrl._CrosshairShotResults._CrosshairShotResults__shotResultDefault = (
+    classmethod(my_shot_result_default)
+)
 
 # Called only once at the start of every match when loading in
 g_playerEvents.onAvatarBecomePlayer += on_load_match
@@ -218,4 +270,4 @@ g_playerEvents.onAvatarBecomeNonPlayer += on_leave_match
 # Called when your tank is destroyed
 AvatarInputHandler.activatePostmortem = my_activate_postmortem
 
-log('Mod has finished loading')
+log("Mod has finished loading")

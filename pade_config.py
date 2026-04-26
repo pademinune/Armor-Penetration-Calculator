@@ -1,7 +1,5 @@
-
 import json
 import os
-
 
 DEFAULT_CONFIG = {
     "armor_label": {
@@ -24,46 +22,48 @@ DEFAULT_CONFIG = {
     },
 }
 
-CONFIG_FOLDER = os.path.join('mods', 'configs', 'pademinune')
-CONFIG_PATH = os.path.join(CONFIG_FOLDER, 'armor-calculator.json')
+CONFIG_FOLDER = os.path.join("mods", "configs", "pademinune")
+CONFIG_PATH = os.path.join(CONFIG_FOLDER, "armor-calculator.json")
 
 
 def create_config():
     if not os.path.exists(CONFIG_FOLDER):
         os.makedirs(CONFIG_FOLDER)
 
-    with open(CONFIG_PATH, 'w') as file:
+    with open(CONFIG_PATH, "w") as file:
         json.dump(DEFAULT_CONFIG, file, indent=4)
+
 
 def read_config():
     with open(CONFIG_PATH) as file:
         user_config = json.load(file)
-    
+
     return user_config
+
 
 def save_flat_config(settings):
     config = {
         "armor_label": {
-            "x_offset": settings['armor_label_x_offset'],
-            "y_offset": settings['armor_label_y_offset'],
-            "font_size": settings['armor_label_font_size'],
-            "label_format": settings['armor_label_format'],
+            "x_offset": settings["armor_label_x_offset"],
+            "y_offset": settings["armor_label_y_offset"],
+            "font_size": settings["armor_label_font_size"],
+            "label_format": settings["armor_label_format"],
         },
         "pen_label": {
-            "x_offset": settings['pen_label_x_offset'],
-            "y_offset": settings['pen_label_y_offset'],
-            "font_size": settings['pen_label_font_size'],
-            "label_format": settings['pen_label_format'],
+            "x_offset": settings["pen_label_x_offset"],
+            "y_offset": settings["pen_label_y_offset"],
+            "font_size": settings["pen_label_font_size"],
+            "label_format": settings["pen_label_format"],
         },
         "colors": {
-            "green_chance": settings['color_green'],
-            "orange_chance": settings['color_orange'],
-            "red_chance": settings['color_red'],
-            "ricochet": settings['color_ricochet'],
+            "green_chance": settings["color_green"],
+            "orange_chance": settings["color_orange"],
+            "red_chance": settings["color_red"],
+            "ricochet": settings["color_ricochet"],
         },
     }
 
-    with open(CONFIG_PATH, 'w') as f:
+    with open(CONFIG_PATH, "w") as f:
         json.dump(config, f, indent=4)
 
 
@@ -76,4 +76,3 @@ except:
     # if the config is invalid, reset it
     create_config()
     user_settings = read_config()
-
