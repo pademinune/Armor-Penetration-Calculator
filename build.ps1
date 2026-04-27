@@ -24,4 +24,4 @@ Copy-Item bin/pade_config.pyc $DEST
 Copy-Item bin/mod_pade_settings_gui.pyc $DEST -Force
 
 
-Write-Output "Compiled and copied main branch mod files to '$DEST'"
+Write-Output "Compiled and copied nightly branch mod files to '$DEST'"
