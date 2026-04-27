@@ -5,6 +5,5 @@ Remove-Item $DEST/mod_armor_pen_calculator.pyc -Force
 Remove-Item $DEST/pade_constants.pyc -Force
 Remove-Item $DEST/pade_gui.pyc -Force
 Remove-Item $DEST/pade_config.pyc -Force
-Remove-Item $DEST/mod_pade_settings_gui.pyc -Force
 
 Write-Output "Removed all 4 nightly branch files from '$DEST'"
