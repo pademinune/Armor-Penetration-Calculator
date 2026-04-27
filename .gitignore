@@ -1,4 +1,3 @@
 bin/
 *.pyc
-*.ps1
 mod_gui_test.py
