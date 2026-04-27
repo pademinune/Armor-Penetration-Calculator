@@ -1,4 +1,4 @@
-# Armor Penetration Calculator
+# Armor Penetration Calculator Nightly
 
 <img width="284" height="270" alt="m4-100%" src="https://github.com/user-attachments/assets/bb634f0c-cd3c-4324-bae8-8f33afb2cd0c" />
 <img width="300" height="328" alt="m4-34%" src="https://github.com/user-attachments/assets/0ac9168a-ffb3-41e4-a923-fd96e7ee82dd" />
@@ -9,6 +9,8 @@
 ## Overview
 
 This mod displays the exact effective armor value and penetration probability of a tank you are aiming at.
+
+In comparison to the main version, the nightly version has no gui config leading to a smaller file.
 
 > *How is this different from other effective armor mods found in modpacks?*
 
